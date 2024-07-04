@@ -1,21 +1,36 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import getAllUsers from "@/lib/getAllUsers";
 
-export default async function PostsPage() {
-  const student = await getAllUsers();
+export default function PostsPage() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedPosts = await getAllUsers();
+        setPosts(fetchedPosts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="mt-5">
       <h1>User Page</h1>
       <br />
-
-      <ul className="flex flex-col gap-2">
-        {student.map((student) => (
+      <ul className="flex flex-col gap-5 font-sens tracking-wide">
+        {posts.map((post) => (
           <li
-            className="p-4 bg-purple-900 border-b-indigo-100 rounded-lg"
-            key={student.id}
+            key={post.id}
+            className="p-4 bg-purple-900 border-b-indigo-100 rounded-lg flex flex-col gap-8"
           >
-            {student.name}
+            <h1 className="text-amber-400 text-2xl">{post.name}</h1>
+            <p>{post.Content}</p>
           </li>
         ))}
       </ul>
