@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import getAllUsers from "@/lib/getAllUsers";
+import getAllPosts from "@/lib/getAllPosts";
+import Link from "next/link";
 
 export default function PostsPage() {
   const [posts, setPosts] = useState([]);
@@ -9,7 +10,7 @@ export default function PostsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedPosts = await getAllUsers();
+        const fetchedPosts = await getAllPosts();
         setPosts(fetchedPosts);
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -21,16 +22,14 @@ export default function PostsPage() {
 
   return (
     <div className="mt-5">
-      <h1>User Page</h1>
+      <h1>Posts Page</h1>
       <br />
-      <ul className="flex flex-col gap-5 font-sens tracking-wide">
+      <ul>
         {posts.map((post) => (
-          <li
-            key={post.id}
-            className="p-4 bg-purple-900 border-b-indigo-100 rounded-lg flex flex-col gap-8"
-          >
-            <h1 className="text-amber-400 text-2xl">{post.name}</h1>
-            <p>{post.Content}</p>
+          <li key={post.id} className="p-4">
+            <Link href={`/posts/${post.id}`}>
+              <h1 className=" text-2xl">{post.title}</h1>
+            </Link>
           </li>
         ))}
       </ul>
