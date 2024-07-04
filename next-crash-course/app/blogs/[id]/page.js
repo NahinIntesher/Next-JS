@@ -7,7 +7,7 @@ export default function BlogPage({ params }) {
     notFound();
   }
   return (
-    <div className="mt-5 p-4 bg-purple-900 border-b-indigo-100 rounded-lg">
+    <div className="mt-5 p-4">
       <h1>The Blog id is: {id}</h1>
     </div>
   );

@@ -15,12 +15,9 @@ export default function Blogs() {
   return (
     <main className="mt-10 p-5">
       <div>
-        <ul className="flex flex-col gap-2">
+        <ul>
           {blogs.map((blog) => (
-            <li
-              className="p-4 bg-purple-900 border-b-indigo-100 rounded-lg"
-              key={blog.id}
-            >
+            <li className="p-5" key={blog.id}>
               <Link href={`/blogs/${blog.id}`}> {blog.title} </Link>
             </li>
           ))}
