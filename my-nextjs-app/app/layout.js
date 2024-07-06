@@ -11,11 +11,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <header>
+        <link rel="icon" href="https://nextjs.org/favicon.ico" />
+      </header>
       <body
         style={{
           backgroundImage: 'url("/images/forest.jpg")',
           backgroundSize: "cover",
-          
         }}
       >
         {children}

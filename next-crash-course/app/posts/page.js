@@ -1,24 +1,8 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
 import getAllPosts from "@/lib/getAllPosts";
 import Link from "next/link";
 
-export default function PostsPage() {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedPosts = await getAllPosts();
-        setPosts(fetchedPosts);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+export default async function PostsPage() {
+  const posts = await getAllPosts();
 
   return (
     <div className="mt-5">
@@ -27,9 +11,10 @@ export default function PostsPage() {
       <ul>
         {posts.map((post) => (
           <li key={post.id} className="p-4">
-            <Link href={`/posts/${post.id}`}>
-              <h1 className=" text-2xl">{post.title}</h1>
-            </Link>
+            {/* <Link href={`/posts/${post.id}`}>
+            <h1 className=" text-2xl">{post.title}</h1> 
+            </Link> */}
+            <h1 className=" text-2xl">{post.Content}</h1>
           </li>
         ))}
       </ul>
