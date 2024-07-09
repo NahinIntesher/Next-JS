@@ -1,6 +1,7 @@
-import dbConnect from "@/lib/dbConnect";
-
-export default function Home() {
-  dbConnect();
-  return <h1 className="">Hei I am Nahin Intesher</h1>;
+export default function HomePage() {
+  return (
+    <div>
+      <h1>HomePage</h1>
+    </div>
+  );
 }
