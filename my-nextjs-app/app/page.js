@@ -1,8 +1,9 @@
 import React from "react";
 import Link from "next/link";
+
 export default function Home({}) {
   return (
-    <main className="flex flex-col mt-20 gap-10 text-center ">
+    <div className="flex flex-col mt-20 gap-10 text-center ">
       <h1 className="text-4xl font-extrabold font-mono">
         Log in to see your dashboard
       </h1>
@@ -17,6 +18,6 @@ export default function Home({}) {
           Go to Register
         </button>
       </Link>
-    </main>
+    </div>
   );
 }

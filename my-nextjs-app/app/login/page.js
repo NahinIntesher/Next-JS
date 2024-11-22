@@ -1,108 +1,164 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { jwtVerify } from "jose"; // Import jwtVerify from jose
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
 
-  const handleSubmit = async (e) => {
+  const validateEmail = (email) => {
+    const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
+    return emailPattern.test(email);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:3001/login", {
+    const newErrors = {};
+
+    if (!validateEmail(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+    // Uncomment if you want to validate the password length
+    // if (formData.password.length < 10) {
+    //   newErrors.password = "Password must be at least 10 characters long.";
+    // }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      console.log("Successfully submitted");
+      console.log("Submitted Data:", formData);
+
+      fetch("https://localhost:3000/loginPage", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
-        credentials: "include", // Required for cookies
-      });
-
-      if (response.status === 401 || response.status === 500) {
-        window.alert("Invalid Login");
-        console.log("Invalid Login");
-      } else {
-        const data = await response.json();
-        const token = data.logged;
-
-        // Verify token using jose
-        try {
-          const { payload } = await jwtVerify(
-            token,
-            new TextEncoder().encode("1234") // Replace "1234" with your actual secret key
-          );
-          // Store the token in local storage
-          localStorage.setItem("token", token);
-          window.alert("Login Successful");
-          router.push("/dashboard");
-        } catch (error) {
-          console.error("Invalid token:", error);
-          window.alert("Invalid token received");
-        }
-      }
-    } catch (error) {
-      console.error(error);
+        body: JSON.stringify(formData),
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          if (response.data.Status === "Login Successful") {
+            alert("You are already logged in");
+          } else {
+            alert("Invalid credentials");
+          }
+        })
+        .catch((err) => console.error(err.message));
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full p-4 bg-cover bg-center relative">
-      <div className="absolute inset-0 z-[-1]"></div>
-      <div className="w-96 rounded-lg p-8 text-center border border-[#f1fd02] backdrop-blur-md">
-        <form action="POST" onSubmit={handleSubmit} className="flex flex-col">
-          <h2 className="text-2xl mb-5 text-[#f1fd02]">Login</h2>
+    <div className="flex flex-col md:flex-row h-auto md:h-3/4 bg-[#feffdf] rounded-md shadow-2xl overflow-hidden w-full max-w-3xl">
+      {/* Picture Section */}
+      <div className="w-full md:w-1/2 h-full md:h-auto relative">
+        {/* <img
+          src={DiscoverYouImage} // Use the imported image
+          alt="Login Illustration"
+          className="object-cover w-full h-full"
+        /> */}
+        h
+      </div>
+      {/* Form Section */}
+      <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col justify-center">
+        {/* Header */}
+        <div className="mb-6 text-center">
+          <h2 className="text-3xl font-bold text-black mb-4">
+            DiscoverYou Login
+          </h2>
+          <p className="text-gray-600">Sign in to your account</p>
+        </div>
 
-          <div className="relative border-b-2 border-[#f1fd02] my-5 input-field">
+        <form onSubmit={handleSubmit}>
+          {/* Email */}
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-black">
+              Email
+            </label>
             <input
               type="email"
+              id="email"
               name="email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              placeholder="example@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full p-3 border text-black border-gray-400 rounded-lg bg-[#feffdf] mt-1"
               required
+              title="Please enter a valid email address."
             />
-            <label>Enter your email</label>
+            {errors.email && (
+              <p className="text-red-500 mt-1 text-xs">{errors.email}</p>
+            )}
           </div>
 
-          <div className="relative border-b-2 border-[#f1fd02] my-5 input-field">
+          {/* Password */}
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-black">
+              Password
+            </label>
             <input
               type="password"
+              id="password"
               name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder="•••••••••••••"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full p-3 border text-black border-gray-400 rounded-lg bg-[#feffdf] mt-1"
+              // minLength="10"
+              // maxLength="36"
               required
             />
-            <label>Enter your password</label>
           </div>
 
-          <button
-            type="submit"
-            className="bg-[#f1fd02] text-black mt-4 font-bold py-3 px-5 cursor-pointer rounded transition ease-in-out duration-300 hover:bg-[#c5ff32] border-2 border-transparent"
-          >
-            Log In
-          </button>
+          {/* Remember Me */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  type="checkbox"
+                  id="remember"
+                  name="remember"
+                  className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor="remember" className="text-black">
+                  Remember me
+                </label>
+              </div>
+            </div>
+
+            {/* Forgot Password */}
+            <a
+              href="#"
+              className="text-sm font-medium text-blue-800 hover:underline"
+            >
+              Forgot password?
+            </a>
+          </div>
+
+          {/* Submit Button */}
+          <div className="mb-4 mt-5">
+            <button
+              type="submit"
+              className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300"
+            >
+              Login
+            </button>
+          </div>
         </form>
-
-        <div className="flex items-center justify-between my-6 text-[#f1fd02]">
-          <label htmlFor="remember" className="flex items-center">
-            <input type="checkbox" id="remember" className="accent-[#f1fd02]" />
-            <p className="ml-2">Remember me</p>
-          </label>
-          <a href="#" className="hover:underline">
-            Forgot password?
-          </a>
-        </div>
-
-        <div className="text-center mt-8 text-[#f1fd02]">
-          <p>
-            Don't have an account?{" "}
-            <Link href="/register" className="hover:underline">
-              Register
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   );
